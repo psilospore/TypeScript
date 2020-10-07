@@ -1456,11 +1456,10 @@ namespace ts {
                 newSourceFiles.push(newSourceFile);
             }
 
+            ambientModuleNameToUnmodifiedFileName = ambientModuleNameToUnmodifiedFileNameUsingOldProgram;
             if (structureIsReused !== StructureIsReused.Completely) {
                 return structureIsReused;
             }
-
-            ambientModuleNameToUnmodifiedFileName = ambientModuleNameToUnmodifiedFileNameUsingOldProgram;
 
             // try to verify results of module resolution
             for (const newSourceFile of modifiedSourceFiles || emptyArray) {
