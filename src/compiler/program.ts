@@ -1276,27 +1276,50 @@ namespace ts {
         }
 
         function canReuseProjectReferences(): boolean {
-            return !forEachProjectReference(
-                oldProgram!.getProjectReferences(),
-                oldProgram!.getResolvedProjectReferences(),
-                (oldResolvedRef, index, parent) => {
-                    const newRef = (parent ? parent.commandLine.projectReferences : projectReferences)![index];
-                    const newResolvedRef = parseProjectReferenceConfigFile(newRef);
-                    if (oldResolvedRef) {
-                        // Resolved project reference has gone missing or changed
-                        return !newResolvedRef || newResolvedRef.sourceFile.version !== oldResolvedRef.sourceFile.version;
-                    }
-                    else {
-                        // A previously-unresolved reference may be resolved now
-                        return newResolvedRef !== undefined;
-                    }
-                },
-                (oldProjectReferences, parent) => {
-                    // If array of references is changed, we cant resue old program
-                    const newReferences = parent ? getResolvedProjectReferenceByPath(parent.sourceFile.path)!.commandLine.projectReferences : projectReferences;
-                    return !arrayIsEqualTo(oldProjectReferences, newReferences, projectReferenceIsEqualTo);
-                }
-            );
+            let seenResolvedRefs: ResolvedProjectReference[] | undefined;
+            return !hasChangedReferences(oldProgram!.getProjectReferences(), oldProgram!.getResolvedProjectReferences(), /*parent*/ undefined);
+
+            function hasChangedReferences(
+                oldProjectReferences: readonly ProjectReference[] | undefined,
+                oldResolvedProjectReferences: readonly (ResolvedProjectReference | undefined)[] | undefined,
+                parent: ResolvedProjectReference | undefined,
+            ): boolean | undefined {
+
+                // Visit project references first
+                const result = hasChangedProjectReferences(oldProjectReferences, parent);
+                if (result) return result;;
+
+                return forEach(oldResolvedProjectReferences, (oldResolvedRef, index) => {
+                    // ignore recursives
+                    if (contains(seenResolvedRefs, oldResolvedRef)) return undefined;
+
+                    const result = hasChangedResolvedProjectReferences(oldResolvedRef, index, parent);
+                    if (result) return result;
+                    if (!oldResolvedRef) return undefined;
+
+                    (seenResolvedRefs || (seenResolvedRefs = [])).push(oldResolvedRef);
+                    return hasChangedReferences(oldResolvedRef.commandLine.projectReferences, oldResolvedRef.references, oldResolvedRef);
+                });
+            }
+        }
+
+        function hasChangedProjectReferences(oldProjectReferences: readonly ProjectReference[] | undefined, parent: ResolvedProjectReference | undefined) {
+            // If array of references is changed, we cant resue old program
+            const newReferences = parent ? getResolvedProjectReferenceByPath(parent.sourceFile.path)!.commandLine.projectReferences : projectReferences;
+            return !arrayIsEqualTo(oldProjectReferences, newReferences, projectReferenceIsEqualTo);
+        }
+
+        function hasChangedResolvedProjectReferences(oldResolvedRef: ResolvedProjectReference | undefined, index: number, parent: ResolvedProjectReference | undefined) {
+            const newRef = (parent ? parent.commandLine.projectReferences : projectReferences)![index];
+            const newResolvedRef = parseProjectReferenceConfigFile(newRef);
+            if (oldResolvedRef) {
+                // Resolved project reference has gone missing or changed
+                return !newResolvedRef || newResolvedRef.sourceFile.version !== oldResolvedRef.sourceFile.version;
+            }
+            else {
+                // A previously-unresolved reference may be resolved now
+                return newResolvedRef !== undefined;
+            }
         }
 
         function tryReuseStructureFromOldProgram(): StructureIsReused {
