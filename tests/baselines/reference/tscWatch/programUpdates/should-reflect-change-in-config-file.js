@@ -94,7 +94,7 @@ Output::
 
 Program root files: ["/a/b/commonFile1.ts"]
 Program options: {"watch":true,"project":"/a/b/tsconfig.json","configFilePath":"/a/b/tsconfig.json"}
-Program structureReused: Not
+Program structureReused: SafeModules
 Program files::
 /a/lib/lib.d.ts
 /a/b/commonFile1.ts

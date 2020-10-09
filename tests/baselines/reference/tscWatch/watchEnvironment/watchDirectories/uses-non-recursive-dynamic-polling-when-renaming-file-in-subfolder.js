@@ -75,7 +75,7 @@ Output::
 
 Program root files: ["/a/username/project/src/file2.ts"]
 Program options: {"watch":true,"project":"/a/username/project/tsconfig.json","configFilePath":"/a/username/project/tsconfig.json"}
-Program structureReused: Not
+Program structureReused: SafeModules
 Program files::
 /a/lib/lib.d.ts
 /a/username/project/src/file2.ts

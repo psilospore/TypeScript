@@ -1332,22 +1332,24 @@ namespace ts {
                 return StructureIsReused.Not;
             }
 
-            // there is an old program, check if we can reuse its structure
-            const oldRootNames = oldProgram.getRootFileNames();
-            if (!arrayIsEqualTo(oldRootNames, rootNames)) {
-                return StructureIsReused.Not;
-            }
-
-            if (!arrayIsEqualTo(options.types, oldOptions.types)) {
-                return StructureIsReused.Not;
-            }
-
             // Check if any referenced project tsconfig files are different
             if (!canReuseProjectReferences()) {
                 return StructureIsReused.Not;
             }
             if (projectReferences) {
                 resolvedProjectReferences = projectReferences.map(parseProjectReferenceConfigFile);
+            }
+
+            // Anything below can affect program structure but it is safe to use modules
+
+            // there is an old program, check if we can reuse its structure
+            const oldRootNames = oldProgram.getRootFileNames();
+            if (!arrayIsEqualTo(oldRootNames, rootNames)) {
+                return StructureIsReused.SafeModules;
+            }
+
+            if (!arrayIsEqualTo(options.types, oldOptions.types)) {
+                return StructureIsReused.Not;
             }
 
             // check if program source files has changed in the way that can affect structure of the program
