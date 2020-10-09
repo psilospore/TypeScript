@@ -1349,7 +1349,7 @@ namespace ts {
             }
 
             if (!arrayIsEqualTo(options.types, oldOptions.types)) {
-                return StructureIsReused.Not;
+                return StructureIsReused.SafeModules;
             }
 
             // check if program source files has changed in the way that can affect structure of the program
