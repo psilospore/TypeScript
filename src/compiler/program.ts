@@ -1374,7 +1374,7 @@ namespace ts {
                     : host.getSourceFile(oldSourceFile.fileName, options.target!, /*onError*/ undefined, shouldCreateNewSourceFile); // TODO: GH#18217
 
                 if (!newSourceFile) {
-                    return StructureIsReused.Not;
+                    return StructureIsReused.SafeModules;
                 }
 
                 Debug.assert(!newSourceFile.redirectInfo, "Host should not return a redirect source file from `getSourceFile`");
