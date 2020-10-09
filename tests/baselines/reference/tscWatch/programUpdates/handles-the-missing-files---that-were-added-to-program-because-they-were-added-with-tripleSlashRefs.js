@@ -84,7 +84,7 @@ Output::
 
 Program root files: ["/a/b/commonFile1.ts"]
 Program options: {"watch":true}
-Program structureReused: Not
+Program structureReused: SafeModules
 Program files::
 /a/lib/lib.d.ts
 /a/b/commonFile2.ts

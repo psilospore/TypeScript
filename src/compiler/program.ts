@@ -1359,7 +1359,7 @@ namespace ts {
             // and hence cant reuse the structure.
             // This is same as how we dont reuse the structure if one of the file from old program is now missing
             if (oldProgram.getMissingFilePaths().some(missingFilePath => host.fileExists(missingFilePath))) {
-                return StructureIsReused.Not;
+                return StructureIsReused.SafeModules;
             }
 
             const newSourceFiles: SourceFile[] = [];
