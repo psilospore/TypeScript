@@ -178,6 +178,7 @@ namespace ts {
         "===": SyntaxKind.EqualsEqualsEqualsToken,
         "!==": SyntaxKind.ExclamationEqualsEqualsToken,
         "=>": SyntaxKind.EqualsGreaterThanToken,
+        "|>": ScriptKind.BarGreaterThanToken,
         "+": SyntaxKind.PlusToken,
         "-": SyntaxKind.MinusToken,
         "**": SyntaxKind.AsteriskAsteriskToken,
@@ -1988,6 +1989,9 @@ namespace ts {
                         }
                         if (text.charCodeAt(pos + 1) === CharacterCodes.equals) {
                             return pos += 2, token = SyntaxKind.BarEqualsToken;
+                        }
+                        if (text.charCodeAt(pos + 1) === CharacterCodes.greaterThan) {
+                            return pos += 2, token = SyntaxKind.BarGreaterThanToken;
                         }
                         pos++;
                         return token = SyntaxKind.BarToken;

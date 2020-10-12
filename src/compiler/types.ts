@@ -64,6 +64,7 @@ namespace ts {
         EqualsEqualsEqualsToken,
         ExclamationEqualsEqualsToken,
         EqualsGreaterThanToken,
+        BarGreaterThanToken,
         PlusToken,
         MinusToken,
         AsteriskToken,
